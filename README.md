@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Kairon
 
-## Getting Started
+Attestation layer for AI coding agents.
 
-First, run the development server:
+An agent opens a ticket, proposes success criteria from the project's scripts, does the work, verifies the criteria, and seals the outcome as a SHA-256 hash — committed to git and optionally emitted as a `Sealed` event on Monad testnet. The chain records *that* a claim was made; the criteria record *what* was claimed.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## How it fits together
+
+```
+Claude Code  ──►  kairon skill  ──►  @kairon/cli  ──►  git (+ Monad testnet)
+                                     │
+                                     ├─ open     ticket file, criteria, signer
+                                     ├─ verify   run criteria, hash result
+                                     ├─ seal     commit hash; --onchain emits Sealed()
+                                     └─ replay   re-run, compare hash
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Three moving parts live here:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **`contracts/`** — one Solidity contract, one event, no storage. Foundry project.
+- **`packages/cli/`** — TypeScript CLI. Ticket lifecycle, criteria runner, onchain attestation via viem.
+- **`plugins/kairon/`** — Claude Code skill that routes `"seal this: …"` phrases to the CLI.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`src/` is the marketing site (Next.js 16, Tailwind 4).
 
-## Learn More
+## Quick start
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+pnpm install
+pnpm --filter @kairon/cli build
+pnpm --filter @kairon/cli link --global
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Run the demo — self-contained, no network:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+cd packages/cli/demo
+kairon verify 042
+kairon seal 042 --no-commit
+kairon replay 042
+kairon verify-onchain 043    # reads a pre-seeded tx back from Monad testnet
+```
 
-## Deploy on Vercel
+Run the site:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+pnpm dev            # http://localhost:3000
+pnpm seed           # reset data/ back to the seed fixtures
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Onchain
+
+Monad testnet only. Contract deploy + RPC details in [`contracts/README.md`](contracts/README.md). Set the deployed address in `.env.local` as `KAIRON_CONTRACT_ADDRESS=0x…`; both `src/lib/monad.ts` and the CLI pick it up from there.
+
+- Chain ID: 10143
+- Explorer: https://testnet.monadexplorer.com
+- RPC: `https://testnet-rpc.monad.xyz` (drpc fallback, 3s timeout)
+
+## Layout
+
+```
+contracts/          Kairon.sol, tests, deploy script
+packages/cli/       @kairon/cli
+  demo/             fixtures that run without a network
+plugins/kairon/     Claude Code skill (shells out; does not reimplement)
+src/                landing, interactive demo, /r/<id> receipt page
+scripts/            seed + playwright screenshot helpers
+data/               seed tickets
+docs/prd.md         product spec
+```
+
+## Honest limitations
+
+Criteria are shell commands a developer writes; `- shell: true` passes. Kairon records what was *claimed*, not what was independently true — the value is in the audit trail, not in external verification. Replay is deterministic only if the environment is. Onchain is a hash, a signer, and a timestamp; it does not prove the criteria ran.
+
+The chain proves *that* a claim was made. The criteria file proves *what* was claimed. Both together are the receipt.
+
+## Status
+
+Hackathon build for [Monad Blitz](https://monad.xyz). Testnet only, burner keys only. CLI is not on npm yet — use the local link flow above.

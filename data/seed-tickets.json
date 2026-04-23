@@ -1,0 +1,62 @@
+[
+  {
+    "id": "042",
+    "title": "JWT to session cookie migration",
+    "agent": "claude-opus-4.7",
+    "commit": "a7f3b2d",
+    "createdAt": "2026-04-22T10:34:12.000Z",
+    "sealedAt": "2026-04-22T14:21:44.000Z",
+    "proof": "0x9b9c376b34f1670977870d48e0a927f7feb27eae38ce2937330f3c6ea7fcf0ff",
+    "txHash": "0x49569f1b2dab1161976e8e0aea00bd74a541c523c99c6ed93dabd77fa0029903",
+    "block": 27268620,
+    "status": "sealed"
+  },
+  {
+    "id": "041",
+    "title": "Rate limiter middleware for /api",
+    "agent": "claude-sonnet-4-6",
+    "commit": "3f1c8a2",
+    "createdAt": "2026-04-22T08:15:00.000Z",
+    "sealedAt": "2026-04-22T11:47:30.000Z",
+    "proof": "0x3f06667dedbb0a683f457f770c7f313a93962692a04ff2d550494c67866e642e",
+    "txHash": "0x49569f1b2dab1161976e8e0aea00bd74a541c523c99c6ed93dabd77fa0029903",
+    "block": 27268620,
+    "status": "sealed"
+  },
+  {
+    "id": "040",
+    "title": "Stripe payment webhook with idempotency",
+    "agent": "claude-opus-4.7",
+    "commit": "e9d7c45",
+    "createdAt": "2026-04-21T16:02:09.000Z",
+    "sealedAt": "2026-04-21T18:39:12.000Z",
+    "proof": "0x5f8e57508652a1e368847f4c2498e434ae2f3a5d27976b4592e85bcbb54dc49e",
+    "txHash": "0x49569f1b2dab1161976e8e0aea00bd74a541c523c99c6ed93dabd77fa0029903",
+    "block": 27268620,
+    "status": "sealed"
+  },
+  {
+    "id": "039",
+    "title": "Postgres full-text index migration for /search",
+    "agent": "claude-sonnet-4-6",
+    "commit": "bc2af61",
+    "createdAt": "2026-04-21T09:00:00.000Z",
+    "sealedAt": "2026-04-21T13:22:05.000Z",
+    "proof": "0x7440af204f22d61eb97e07eff8efab238535fd083dd4c3b60540b75d19a59e55",
+    "txHash": "0x49569f1b2dab1161976e8e0aea00bd74a541c523c99c6ed93dabd77fa0029903",
+    "block": 27268620,
+    "status": "sealed"
+  },
+  {
+    "id": "038",
+    "title": "Redis cache layer for invoice lookups",
+    "agent": "claude-opus-4.7",
+    "commit": "5a1b9f3",
+    "createdAt": "2026-04-20T19:45:00.000Z",
+    "sealedAt": "2026-04-20T22:11:37.000Z",
+    "proof": "0x23883ffc4b5f18970bf903bd3da498843694e94f42958ba34f563c6a4580f8cf",
+    "txHash": "0x49569f1b2dab1161976e8e0aea00bd74a541c523c99c6ed93dabd77fa0029903",
+    "block": 27268620,
+    "status": "sealed"
+  }
+]

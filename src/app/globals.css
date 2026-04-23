@@ -1,26 +1,171 @@
 @import "tailwindcss";
 
+@theme {
+  /* warm paper · light mode default */
+  --color-paper: #F4EFE4;
+  --color-paper-2: #EAE3D3;
+  --color-paper-3: #DDD4BE;
+  --color-ink: #1A1713;
+  --color-ink-dim: #3E3830;
+  --color-muted: #7A7466;
+  --color-border: #D8D0BE;
+  --color-border-strong: #B8AE98;
+
+  /* seal accent — dark gold on paper, bright gold for highlights */
+  --color-seal: #8A6E3E;
+  --color-seal-bright: #C39C58;
+
+  /* signals */
+  --color-pass: #4C6A2F;
+  --color-fail: #8B2C1C;
+
+  /* fonts */
+  --font-serif: var(--font-plex-serif);
+  --font-mono: var(--font-plex-mono);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html, body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-feature-settings: "ss01", "zero";
+  font-optical-sizing: auto;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+
+/* selection → parchment highlight */
+::selection {
+  background: var(--color-seal-bright);
+  color: var(--color-ink);
+}
+
+/* hairline scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border-strong); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-muted); }
+
+/* paper grain — subtle, warm, document-texture */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0.08;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.15  0 0 0 0 0.12  0 0 0 0 0.08  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+/* warm vignette for hero */
+.hero-glow { position: relative; }
+.hero-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 20%, rgba(195,156,88,0.12), transparent 60%),
+    radial-gradient(ellipse 120% 60% at 50% 100%, rgba(138,110,62,0.06), transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* lenis hooks */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: clip; }
+
+/* ink-bleed glyph paint keyframe (used by hash painter) */
+@keyframes ink-bleed {
+  0%   { opacity: 0; filter: blur(6px); transform: translateY(4px) scale(1.05); color: var(--color-seal-bright); }
+  40%  { opacity: 0.8; filter: blur(2px); transform: translateY(0) scale(1); color: var(--color-seal-bright); }
+  100% { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); color: var(--color-ink); }
+}
+
+/* stamp impression — ink sink on scroll */
+@keyframes stamp-drop {
+  0%   { opacity: 0; transform: translateY(-14px) rotate(-6deg) scale(1.4); filter: blur(3px); }
+  55%  { opacity: 0.85; transform: translateY(2px) rotate(-3deg) scale(0.98); filter: blur(0); }
+  100% { opacity: 1; transform: translateY(0) rotate(-3deg) scale(1); filter: blur(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-stamp-drop { animation: none !important; opacity: 1 !important; transform: none !important; }
+  .ink-bleed { animation: none !important; opacity: 1 !important; filter: none !important; transform: none !important; }
+  .animate-ping { animation: none !important; }
+  .animate-pulse { animation: none !important; }
+}
+
+/* Storiva-grade scroll reveal system — paper-compat, warm cinematic ease */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(48px) scale(0.96);
+  filter: blur(6px);
+  transition:
+    opacity 1000ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1000ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform, filter;
+}
+
+.reveal-on-scroll.in-view {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+}
+
+.reveal-on-scroll.dramatic {
+  transform: translateY(64px) scale(0.94);
+  filter: blur(10px);
+  transition:
+    opacity 1200ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1200ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 800ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-on-scroll.dramatic.in-view {
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+}
+
+.stagger > .reveal-child {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 800ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.stagger.in-view > .reveal-child {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.stagger > .reveal-child:nth-child(1) { transition-delay: 80ms; }
+.stagger > .reveal-child:nth-child(2) { transition-delay: 180ms; }
+.stagger > .reveal-child:nth-child(3) { transition-delay: 280ms; }
+.stagger > .reveal-child:nth-child(4) { transition-delay: 380ms; }
+.stagger > .reveal-child:nth-child(5) { transition-delay: 480ms; }
+.stagger > .reveal-child:nth-child(6) { transition-delay: 580ms; }
+.stagger > .reveal-child:nth-child(n+7) { transition-delay: 680ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-on-scroll,
+  .reveal-on-scroll.dramatic {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  .stagger > .reveal-child {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }

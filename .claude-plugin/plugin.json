@@ -1,0 +1,6 @@
+{
+  "name": "kairon",
+  "version": "0.1.0",
+  "description": "Sealed ticket attestation for agent work",
+  "skills": ["plugins/kairon/skills/kairon"]
+}

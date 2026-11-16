@@ -53,3 +53,8 @@ contracts/broadcast/
 # cli build output
 packages/cli/dist/
 packages/cli/node_modules/
+
+# local AI tooling
+.claude/
+CLAUDE.md
+AGENTS.md

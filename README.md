@@ -77,4 +77,4 @@ The chain proves *that* a claim was made. The criteria file proves *what* was cl
 
 ## Status
 
-Hackathon build for [Monad Blitz](https://monad.xyz). Testnet only, burner keys only. CLI is not on npm yet — use the local link flow above.
+Solo hackathon build for [Monad Blitz](https://monad.xyz) Kayseri (April 23, 2026) — honorable mention, top 6 projects. Testnet only, burner keys only. CLI is not on npm yet — use the local link flow above.
